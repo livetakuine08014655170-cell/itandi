@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ITANDI × ARNet クリーン比較 v17・業者名AD参考表示</title>
+<title>ITANDI × ARNet クリーン比較 v17.2・業者名AD参考表示</title>
 <style>
 :root{--navy:#17365d;--blue:#1f4e78;--gold:#b59b53;--bg:#f4f7fb;--line:#dbe3ea;--red:#c63838;--green:#168552}
 *{box-sizing:border-box}
@@ -32,7 +32,7 @@ td{padding:7px 8px;border-bottom:1px solid #edf1f4}
 </style>
 </head>
 <body>
-<header><div class="wrap" style="padding:0"><h1 style="margin:0;font-size:24px">ITANDI × ARNet クリーン比較 v17・業者名AD参考表示</h1>
+<header><div class="wrap" style="padding:0"><h1 style="margin:0;font-size:24px">ITANDI × ARNet クリーン比較 v17.2・業者名AD参考表示</h1>
 <div style="font-size:13px;color:#e8eef5;margin-top:5px">読取部分は正常版をそのまま使用。比較部分だけ新規作成。</div></div></header>
 <div class="wrap">
   <div class="grid">
@@ -463,8 +463,15 @@ async function pageRows(page,pno){
  let a=tc.items.map(x=&gt;n(x.str)).filter(Boolean), ss=starts(a), out=[];
  for(let k=0;k&lt;ss.length;k++){
    let [s,e,state]=ss[k], end=k+1&lt;ss.length?ss[k+1][0]:a.length;
-   let r=parseBlock(a.slice(e,end),state);
-   if(r&amp;&amp;r.name)out.push({page:pno,...r});
+   let block=a.slice(e,end);
+   let r=parseBlock(block,state);
+   if(r&amp;&amp;r.name){
+     // 高司5丁目貸戸建（009/010）だけピンポイント補正
+     const joined=block.join(&quot;&quot;);
+     const tm=joined.match(/高司\s*5丁目\s*貸戸建\s*[（(]\s*(009|010)\s*[）)]/);
+     if(tm){ r.name=`高司5丁目貸戸建（${tm[1]}）`; r.room=&quot;&quot;; }
+     out.push({page:pno,...r});
+   }
  }
  return out;
 }
@@ -559,7 +566,7 @@ $(&quot;run&quot;).onclick=run;$(&quot;reset&quot;).onclick=()=&gt;location.relo
 
 <script>
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function norm(s){return String(s??"").normalize("NFKC").replace(/戶/g,"戸").replace(/[\s　・･‧.\-_（）()]/g,"").replace(/^物確不要7日以上前/,"").toLowerCase()}
+function norm(s){return String(s??"").normalize("NFKC").replace(/戶/g,"戸").replace(/[\s　・･‧.\-_（）()]/g,"").replace(/^(?:(?:要物確|物確不要|7日以上前))+/,"").toLowerCase()}
 
 function cleanName(s){
   return String(s??"")
