@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ITANDI × ARNet クリーン比較 v17.2・業者名AD参考表示</title>
+<title>ITANDI × ARNet クリーン比較 v17.3・業者名AD参考表示</title>
 <style>
 :root{--navy:#17365d;--blue:#1f4e78;--gold:#b59b53;--bg:#f4f7fb;--line:#dbe3ea;--red:#c63838;--green:#168552}
 *{box-sizing:border-box}
@@ -32,7 +32,7 @@ td{padding:7px 8px;border-bottom:1px solid #edf1f4}
 </style>
 </head>
 <body>
-<header><div class="wrap" style="padding:0"><h1 style="margin:0;font-size:24px">ITANDI × ARNet クリーン比較 v17.2・業者名AD参考表示</h1>
+<header><div class="wrap" style="padding:0"><h1 style="margin:0;font-size:24px">ITANDI × ARNet クリーン比較 v17.3・業者名AD参考表示</h1>
 <div style="font-size:13px;color:#e8eef5;margin-top:5px">読取部分は正常版をそのまま使用。比較部分だけ新規作成。</div></div></header>
 <div class="wrap">
   <div class="grid">
@@ -161,7 +161,16 @@ function parseBlock(a,state){
      name=name.slice(0,-room.length);
    }
    name=name.trim();
-   company=companyMark ? pre.slice(companyMark[0]).join(&quot;&quot;).trim() : pre.slice(roomPos+1).join(&quot;&quot;).trim();
+
+   // 管理会社は「号室直後 ～ 所在地(兵庫県)直前」までを丸ごと取得。
+   // 会社名の途中にある「株式会社」から切り出すと、
+   // 「都市住建株式会社」→「株式会社」のように前半が欠けるため。
+   company=pre.slice(roomPos+1).join(&quot;&quot;).trim();
+ }
+
+ // 住宅供給公社だけは従来どおり表示を「公社」に統一。
+ if(String(company||&quot;&quot;).trim()===&quot;兵庫県住宅供給公社&quot;){
+   company=&quot;公社&quot;;
  }
 
  // 公社のITANDI物件だけに付く前置きノイズを除去。
